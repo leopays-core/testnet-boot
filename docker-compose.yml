@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  leopays_node:
+    image: leopays/leopays:latest
+    hostname: leopays_node
+    command: leopays-node --config-dir=/data-dir/config --data-dir=/data-dir/data --disable-replay-opts --genesis-json /data-dir/config/genesis.json
+    #command: leopays-node --config-dir=/data-dir/config --data-dir=/data-dir/data --disable-replay-opts
+    volumes:
+      - "./data/leopays_node:/data-dir"
+      - "./config/leopays_node/config.ini:/data-dir/config/config.ini"
+      - "./config/leopays_node/genesis.json:/data-dir/config/genesis.json"
+    ports:
+      - "8888:8888"
+      - "9876:9876"
+      - "8080:8080"
+    expose:
+      - "8888"
+      - "9876"
+      - "8080"
+
+  leopays_wallet:
+    image: leopays/leopays:latest
+    hostname: leopays_wallet
+    command: leopays-wallet --config-dir=/data-dir/config --data-dir=/data-dir/data --wallet-dir=/data-dir/wallet
+    volumes:
+      - "./data/leopays_wallet/config:/data-dir/config"
+      - "./data/leopays_wallet/data:/data-dir/data"
+      - "./data/leopays_wallet/wallet:/data-dir/wallet"
+      - "./config/leopays_wallet/config.ini:/data-dir/config/config.ini"
+      - "./config/contracts:/contracts"
+    ports:
+      - "8900:8900"
+    expose:
+      - "8900"
+    links:
+      - leopays_node

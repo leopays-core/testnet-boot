@@ -1,0 +1,134 @@
+###INSERT envars
+. ./.environment
+
+
+# Manual deployers, add a line below this block that looks like:
+#    bioshost=$BIOS_HOSTNAME
+#    biosport=$BIOS_HTTP_PORT
+#    cnt_dir=$CONTRACT_DIR
+#    sys=$SYS_CONTRACT
+# where $BIOS_HOSTNAME is replaced by the hostname portion of the http-server-address configured
+# for the nodeos instance running to bios producer
+# ------ DO NOT ALTER THE NEXT LINE -------
+BIOS_HOSTNAME="localhost"
+BIOS_HTTP_PORT=8888
+CONTRACT_DIR="$(pwd)/config/contracts"
+BIOS_CONTRACT_PATH="$(pwd)/config/contracts/eosio.bios"
+SYS_CONTRACT_PATH="$(pwd)/config/contracts/eosio.system"
+
+
+
+bioshost=$BIOS_HOSTNAME
+if [ -z "$bioshost" ]; then
+   bioshost=localhost
+fi
+
+biosport=$BIOS_HTTP_PORT
+if [ -z "$biosport" ]; then
+    biosport=8888
+fi
+
+cnt_dir=$CONTRACT_DIR
+if [ -z "$cnt_dir" ]; then
+    cnt_dir="$(pwd)/config/contracts"
+fi
+
+bioscontractpath=$BIOS_CONTRACT_PATH
+if [ -z "$bioscontractpath" ]; then
+    bioscontractpath="$cnt_dir/eosio.bios"
+fi
+
+systemcontractpath=$SYS_CONTRACT_PATH
+if [ -z "$bioscontractpath" ]; then
+    systemcontractpath="$cnt_dir/eosio.system"
+fi
+
+wddir=leopays-ignition-wd
+wdaddr=localhost:8900
+wdurl=http://$wdaddr
+
+
+logfile=$wddir/bootlog.txt
+
+
+
+
+ecmd () {
+    echo ===== Start: $step ============ >> $logfile
+    echo executing: leopays-cli --wallet-url $wdurl --url http://$bioshost:$biosport $* | tee -a $logfile
+    echo ----------------------- >> $logfile
+    leopays-cli --wallet-url $wdurl --url http://$bioshost:$biosport $* >> $logfile 2>&1
+    echo ==== End: $step ============== >> $logfile
+    step=$(($step + 1))
+}
+
+wcmd () {
+    ecmd wallet $*
+}
+
+
+function linkAuth () {
+    ACCOUNT=$1
+    CONTRACT=$2
+    ACTION=$3
+    PERMISION=$4
+
+    ecmd set action permission $ACCOUNT $CONTRACT $ACTION $PERMISION
+}
+
+function linkAuthAccountToLeoPaysRoBotForLpc () {
+    ACCOUNT=$1
+    PERMISION="leopaysrobot"
+    CONTRACT="lpc"
+    ACTIONS=$LPC_ACTIONS
+
+    for action in $ACTIONS; do
+        linkAuth $ACCOUNT $CONTRACT $action $PERMISION
+    done
+}
+
+function linkAuthAccountToLeoPaysRoBotForLpcMsig () {
+    ACCOUNT=$1
+    PERMISION=$2
+    CONTRACT="lpc.msig"
+    ACTIONS=$LPC_MSIG_ACTIONS
+
+    for action in $ACTIONS; do
+        linkAuth $ACCOUNT $CONTRACT $action $PERMISION
+    done
+}
+
+function linkAuthAccountToLeoPaysRoBotForLpcToken () {
+    ACCOUNT=$1
+    PERMISION=$2
+    CONTRACT="lpc.token"
+    ACTIONS=$LPC_TOKEN_ACTIONS
+
+    for action in $ACTIONS; do
+        linkAuth $ACCOUNT $CONTRACT $action $PERMISION
+    done
+}
+
+function linkAuthAccountToLeoPaysRoBotForLpcWrap () {
+    ACCOUNT=$1
+    PERMISION=$2
+    CONTRACT="lpc.wrap"
+    ACTIONS=$LPC_WRAP_ACTIONS
+
+    for action in $ACTIONS; do
+        linkAuth $ACCOUNT $CONTRACT $action $PERMISION
+    done
+}
+
+function linkAuthAccountToLeoPaysRoBot () {
+    ACCOUNT=$1
+    PERMISION="leopaysrobot"
+    linkAuthAccountToLeoPaysRoBotForLpc $ACCOUNT $PERMISION
+    linkAuthAccountToLeoPaysRoBotForLpcMsig $ACCOUNT $PERMISION
+    linkAuthAccountToLeoPaysRoBotForLpcToken $ACCOUNT $PERMISION
+    linkAuthAccountToLeoPaysRoBotForLpcWrap $ACCOUNT $PERMISION
+}
+
+
+
+echo "Cli Environment loaded"
