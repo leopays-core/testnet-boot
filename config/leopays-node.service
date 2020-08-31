@@ -1,0 +1,16 @@
+# /etc/systemd/system/leopays-node.service
+
+[Unit]
+Description=LeoPays Node ervice
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/leopays-node \
+  --config-dir=/home/leopays/leopays-node/config \
+  --data-dir=/home/leopays/leopays-node/data \
+  --disable-replay-opts \
+  --genesis-json /home/leopays/leopays-node/config/genesis.json
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
