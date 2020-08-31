@@ -108,3 +108,20 @@ p2p-peer-address = host:port
 Прилинковали leopays к leopaysrobot.
 отправили leopaysrobot монеты для создания аккаунтов.
 Можно создавать аккаунты.
+
+```bash
+sudo systemctl enable leopays-node
+sudo systemctl daemon-reload
+sudo systemctl start leopays-node
+sudo systemctl stop leopays-node
+sudo systemctl restart leopays-node
+sudo systemctl status leopays-node
+
+sudo systemctl start mongod
+sudo systemctl stop mongod
+sudo systemctl restart mongod
+sudo systemctl status mongod
+
+pm2 stop leopaysrobot
+pm2 restart leopaysrobot
+```
