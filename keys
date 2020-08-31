@@ -1,4 +1,5 @@
 # This is the DEV KEY! LPC6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV=KEY:5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
+
 # lpc leopays inti private key for public key in genesis.json
 LPC_LEOPAYS_INIT_PUB_KEY=LPC6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
 LPC_LEOPAYS_INIT_PRIV_KEY=5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
